@@ -1,25 +1,59 @@
-import { Plus } from 'lucide-react';
-import { useTaskStore } from '../store/useTaskStore';
-import type { Task, Status } from '../types/task';
-import TaskCard from '../components/task/TaskCard';
+import { useState, useMemo } from "react";
+import { Plus } from "lucide-react";
+import { useTaskStore } from "../store/useTaskStore";
+import type { Task, Status, Priority } from "../types/task";
+import TaskCard from "../components/task/TaskCard";
+import FilterBar from "../components/task/FilterBar";
 
 const COLUMNS: { status: Status; title: string; color: string }[] = [
-  { status: 'To Do', title: 'To Do', color: 'border-gray-400' },
-  { status: 'In Progress', title: 'In Progress', color: 'border-blue-400' },
-  { status: 'Done', title: 'Done', color: 'border-green-400' },
+  { status: "To Do", title: "To Do", color: "border-gray-400" },
+  { status: "In Progress", title: "In Progress", color: "border-blue-400" },
+  { status: "Done", title: "Done", color: "border-green-400" },
 ];
 
 export default function DashboardPage() {
   const tasks = useTaskStore((state) => state.tasks);
 
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState<Priority | "All">("All");
+  const [statusFilter, setStatusFilter] = useState<Status | "All">("All");
+
+  // Filter tasks ตาม search + filters
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((task) => {
+      // Search: เฉพาะชื่อ task (case-insensitive)
+      const matchSearch =
+        searchQuery === "" ||
+        task.title.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Priority filter
+      const matchPriority =
+        priorityFilter === "All" || task.priority === priorityFilter;
+
+      // Status filter
+      const matchStatus =
+        statusFilter === "All" || task.status === statusFilter;
+
+      // ต้องตรงทุกเงื่อนไข (AND)
+      return matchSearch && matchPriority && matchStatus;
+    });
+  }, [tasks, searchQuery, priorityFilter, statusFilter]);
+
+  const handleClearAll = () => {
+    setSearchQuery("");
+    setPriorityFilter("All");
+    setStatusFilter("All");
+  };
+
   const handleCardClick = (task: Task) => {
-    console.log('Clicked task:', task);
-    // TODO: เปิด modal — จะทำใน step ถัดไป
+    console.log("Clicked task:", task);
+    // TODO: เปิด modal — step ถัดไป
   };
 
   const handleNewTask = () => {
-    console.log('New task clicked');
-    // TODO: เปิด modal create — จะทำใน step ถัดไป
+    console.log("New task clicked");
+    // TODO: เปิด modal create — step ถัดไป
   };
 
   return (
@@ -36,12 +70,28 @@ export default function DashboardPage() {
         </button>
       </div>
 
-      {/* TODO: FilterBar — จะทำใน step ถัดไป */}
+      {/* Filter Bar */}
+      <FilterBar
+        searchQuery={searchQuery}
+        priorityFilter={priorityFilter}
+        statusFilter={statusFilter}
+        onSearchChange={setSearchQuery}
+        onPriorityChange={setPriorityFilter}
+        onStatusChange={setStatusFilter}
+        onClearAll={handleClearAll}
+      />
+
+      {/* Results info */}
+      <div className="text-sm text-gray-500">
+        Showing {filteredTasks.length} task{filteredTasks.length !== 1 && "s"}
+      </div>
 
       {/* 3 Columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {COLUMNS.map((column) => {
-          const columnTasks = tasks.filter((t) => t.status === column.status);
+          const columnTasks = filteredTasks.filter(
+            (t) => t.status === column.status,
+          );
 
           return (
             <div key={column.status} className="space-y-3">
@@ -60,7 +110,11 @@ export default function DashboardPage() {
               {/* Cards */}
               <div className="space-y-3">
                 {columnTasks.map((task) => (
-                  <TaskCard key={task.id} task={task} onClick={handleCardClick} />
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    onClick={handleCardClick}
+                  />
                 ))}
 
                 {/* Empty state */}
