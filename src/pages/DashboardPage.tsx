@@ -1,12 +1,13 @@
 import { useState, useMemo, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { useTaskStore } from "../store/useTaskStore";
-import type { Task, Status, Priority } from "../types/task";
+import type { Task, Status, Priority, TaskFormData } from "../types/task";
 import TaskCard from "../components/task/TaskCard";
 import FilterBar from "../components/task/FilterBar";
 import Pagination from "../components/ui/Pagination";
 import Modal from "../components/ui/Modal";
 import TaskDetailView from "../components/task/TaskDetailView";
+import TaskForm from "../components/task/TaskForm";
 
 const TASKS_PER_PAGE = 6;
 
@@ -19,7 +20,8 @@ const COLUMNS: { status: Status; title: string; color: string }[] = [
 export default function DashboardPage() {
   const tasks = useTaskStore((state) => state.tasks);
   const globalSearch = useTaskStore((state) => state.globalSearch);
-
+  const updateTask = useTaskStore((state) => state.updateTask);
+  const addTask = useTaskStore((state) => state.addTask);
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
   const [priorityFilter, setPriorityFilter] = useState<Priority | "All">("All");
@@ -27,6 +29,8 @@ export default function DashboardPage() {
   const [currentPage, setCurrentPage] = useState(1);
   // Modal state
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [modalMode, setModalMode] = useState<"view" | "edit">("view");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   // Reset to page 1 เมื่อ filter เปลี่ยน
   useEffect(() => {
@@ -80,18 +84,35 @@ export default function DashboardPage() {
 
   const handleCardClick = (task: Task) => {
     setSelectedTask(task);
+    setModalMode("view");
   };
+
   const handleCloseModal = () => {
     setSelectedTask(null);
+    setModalMode("view"); // reset
   };
 
   const handleEditTask = () => {
-    console.log("Edit clicked"); // TODO: Step 28
+    setModalMode("edit");
+  };
+
+  const handleSaveTask = (data: TaskFormData) => {
+    if (!selectedTask) return;
+    updateTask(selectedTask.id, data);
+    handleCloseModal();
   };
 
   const handleNewTask = () => {
-    console.log("New task clicked");
-    // TODO: เปิด modal create
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setIsCreateModalOpen(false);
+  };
+
+  const handleCreateTask = (data: TaskFormData) => {
+    addTask(data);
+    handleCloseCreateModal();
   };
 
   return (
@@ -174,19 +195,38 @@ export default function DashboardPage() {
         onPageChange={setCurrentPage}
       />
 
-      {/* Task Detail Modal */}
+      {/* Task Detail / Edit Modal */}
       <Modal
         isOpen={selectedTask !== null}
         onClose={handleCloseModal}
-        title="Task Details"
+        title={modalMode === "edit" ? "Edit Task" : "Task Details"}
       >
-        {selectedTask && (
+        {selectedTask && modalMode === "view" && (
           <TaskDetailView
             task={selectedTask}
             onEdit={handleEditTask}
             onClose={handleCloseModal}
           />
         )}
+        {selectedTask && modalMode === "edit" && (
+          <TaskForm
+            initialData={selectedTask}
+            onSubmit={handleSaveTask}
+            onCancel={() => setModalMode("view")}
+          />
+        )}
+      </Modal>
+
+      {/* Create Task Modal */}
+      <Modal
+        isOpen={isCreateModalOpen}
+        onClose={handleCloseCreateModal}
+        title="Create New Task"
+      >
+        <TaskForm
+          onSubmit={handleCreateTask}
+          onCancel={handleCloseCreateModal}
+        />
       </Modal>
     </div>
   );
