@@ -1,6 +1,10 @@
-import { Search, Bell, ChevronDown } from 'lucide-react';
+import { Search, Bell, ChevronDown, X } from "lucide-react";
+import { useTaskStore } from "../../store/useTaskStore";
 
 export default function Header() {
+  const globalSearch = useTaskStore((state) => state.globalSearch);
+  const setGlobalSearch = useTaskStore((state) => state.setGlobalSearch);
+
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
       {/* Page Title */}
@@ -16,9 +20,20 @@ export default function Header() {
           />
           <input
             type="text"
-            placeholder="Search"
-            className="pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Search anything..."
+            value={globalSearch}
+            onChange={(e) => setGlobalSearch(e.target.value)}
+            className="pl-9 pr-9 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
+          {globalSearch && (
+            <button
+              onClick={() => setGlobalSearch("")}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-200 rounded"
+              aria-label="Clear search"
+            >
+              <X size={14} className="text-gray-400" />
+            </button>
+          )}
         </div>
 
         {/* Notification */}

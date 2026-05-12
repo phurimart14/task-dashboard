@@ -13,6 +13,7 @@ const COLUMNS: { status: Status; title: string; color: string }[] = [
 
 export default function DashboardPage() {
   const tasks = useTaskStore((state) => state.tasks);
+  const globalSearch = useTaskStore((state) => state.globalSearch);
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,7 +23,16 @@ export default function DashboardPage() {
   // Filter tasks ตาม search + filters
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
-      // Search: เฉพาะชื่อ task (case-insensitive)
+      // Global Search (Item A): ค้นได้ทุก field
+      const globalMatch =
+        globalSearch === "" ||
+        task.title.toLowerCase().includes(globalSearch.toLowerCase()) ||
+        task.priority.toLowerCase().includes(globalSearch.toLowerCase()) ||
+        task.status.toLowerCase().includes(globalSearch.toLowerCase()) ||
+        task.tag.toLowerCase().includes(globalSearch.toLowerCase()) ||
+        task.project.toLowerCase().includes(globalSearch.toLowerCase());
+
+      // Local Search (Item B): เฉพาะชื่อ task
       const matchSearch =
         searchQuery === "" ||
         task.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -36,9 +46,9 @@ export default function DashboardPage() {
         statusFilter === "All" || task.status === statusFilter;
 
       // ต้องตรงทุกเงื่อนไข (AND)
-      return matchSearch && matchPriority && matchStatus;
+      return globalMatch && matchSearch && matchPriority && matchStatus;
     });
-  }, [tasks, searchQuery, priorityFilter, statusFilter]);
+  }, [tasks, globalSearch, searchQuery, priorityFilter, statusFilter]);
 
   const handleClearAll = () => {
     setSearchQuery("");
