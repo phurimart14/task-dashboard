@@ -1,9 +1,14 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { useTaskStore } from "../store/useTaskStore";
 import type { Task, Status, Priority } from "../types/task";
 import TaskCard from "../components/task/TaskCard";
 import FilterBar from "../components/task/FilterBar";
+import Pagination from "../components/ui/Pagination";
+import Modal from "../components/ui/Modal";
+import TaskDetailView from "../components/task/TaskDetailView";
+
+const TASKS_PER_PAGE = 6;
 
 const COLUMNS: { status: Status; title: string; color: string }[] = [
   { status: "To Do", title: "To Do", color: "border-gray-400" },
@@ -19,11 +24,19 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [priorityFilter, setPriorityFilter] = useState<Priority | "All">("All");
   const [statusFilter, setStatusFilter] = useState<Status | "All">("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  // Modal state
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+
+  // Reset to page 1 เมื่อ filter เปลี่ยน
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [globalSearch, searchQuery, priorityFilter, statusFilter]);
 
   // Filter tasks ตาม search + filters
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
-      // Global Search (Item A): ค้นได้ทุก field
+      // Global Search (Item A)
       const globalMatch =
         globalSearch === "" ||
         task.title.toLowerCase().includes(globalSearch.toLowerCase()) ||
@@ -32,7 +45,7 @@ export default function DashboardPage() {
         task.tag.toLowerCase().includes(globalSearch.toLowerCase()) ||
         task.project.toLowerCase().includes(globalSearch.toLowerCase());
 
-      // Local Search (Item B): เฉพาะชื่อ task
+      // Local Search (Item B)
       const matchSearch =
         searchQuery === "" ||
         task.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -50,6 +63,15 @@ export default function DashboardPage() {
     });
   }, [tasks, globalSearch, searchQuery, priorityFilter, statusFilter]);
 
+  // Pagination
+  const totalPages = Math.ceil(filteredTasks.length / TASKS_PER_PAGE);
+
+  const paginatedTasks = useMemo(() => {
+    const start = (currentPage - 1) * TASKS_PER_PAGE;
+    const end = start + TASKS_PER_PAGE;
+    return filteredTasks.slice(start, end);
+  }, [filteredTasks, currentPage]);
+
   const handleClearAll = () => {
     setSearchQuery("");
     setPriorityFilter("All");
@@ -57,13 +79,19 @@ export default function DashboardPage() {
   };
 
   const handleCardClick = (task: Task) => {
-    console.log("Clicked task:", task);
-    // TODO: เปิด modal — step ถัดไป
+    setSelectedTask(task);
+  };
+  const handleCloseModal = () => {
+    setSelectedTask(null);
+  };
+
+  const handleEditTask = () => {
+    console.log("Edit clicked"); // TODO: Step 28
   };
 
   const handleNewTask = () => {
     console.log("New task clicked");
-    // TODO: เปิด modal create — step ถัดไป
+    // TODO: เปิด modal create
   };
 
   return (
@@ -93,13 +121,14 @@ export default function DashboardPage() {
 
       {/* Results info */}
       <div className="text-sm text-gray-500">
-        Showing {filteredTasks.length} task{filteredTasks.length !== 1 && "s"}
+        Showing {paginatedTasks.length} of {filteredTasks.length} task
+        {filteredTasks.length !== 1 && "s"}
       </div>
 
       {/* 3 Columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {COLUMNS.map((column) => {
-          const columnTasks = filteredTasks.filter(
+          const columnTasks = paginatedTasks.filter(
             (t) => t.status === column.status,
           );
 
@@ -138,6 +167,27 @@ export default function DashboardPage() {
           );
         })}
       </div>
+      {/* Pagination */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
+
+      {/* Task Detail Modal */}
+      <Modal
+        isOpen={selectedTask !== null}
+        onClose={handleCloseModal}
+        title="Task Details"
+      >
+        {selectedTask && (
+          <TaskDetailView
+            task={selectedTask}
+            onEdit={handleEditTask}
+            onClose={handleCloseModal}
+          />
+        )}
+      </Modal>
     </div>
   );
 }
