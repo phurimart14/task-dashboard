@@ -1,7 +1,7 @@
 import { Calendar } from "lucide-react";
 import type { Task } from "../../types/task";
 import Badge from "../ui/Badge";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import clsx from "clsx";
 
 interface TaskCardProps {
@@ -40,14 +40,16 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
       {/* Date + Status */}
       <div className="flex items-center gap-2 mb-3 text-xs text-gray-600 dark:text-gray-300">
         <Calendar size={12} />
-        <span>{format(new Date(task.date), "MMM dd")}</span>
+        <span>{format(parseISO(task.date), "MMM dd")}</span>
         <Badge variant="status" value={task.status} />
       </div>
 
       {/* Progress */}
       <div className="mb-3">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-xs text-gray-600 dark:text-gray-300">Progress</span>
+          <span className="text-xs text-gray-600 dark:text-gray-300">
+            Progress
+          </span>
           <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
             {task.progress}%
           </span>

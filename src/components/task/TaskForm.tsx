@@ -7,6 +7,16 @@ import type {
   Tag,
 } from "../../types/task";
 
+// === Helper: Get today's date in YYYY-MM-DD format (local timezone) ===
+// ป้องกัน timezone bug จาก toISOString() ที่ใช้ UTC
+function getTodayLocalDate(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 interface TaskFormProps {
   initialData?: Task | null;
   onSubmit: (data: TaskFormData) => void;
@@ -37,9 +47,7 @@ export default function TaskForm({
     initialData?.priority ?? "Medium Priority",
   );
   const [status, setStatus] = useState<Status>(initialData?.status ?? "To Do");
-  const [date, setDate] = useState(
-    initialData?.date ?? new Date().toISOString().split("T")[0],
-  );
+  const [date, setDate] = useState(initialData?.date ?? getTodayLocalDate());
   const [progress, setProgress] = useState(initialData?.progress ?? 0);
 
   const [errors, setErrors] = useState<{ title?: string; project?: string }>(

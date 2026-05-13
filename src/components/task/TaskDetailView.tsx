@@ -1,8 +1,8 @@
-import { Calendar, Pencil, Trash2 } from 'lucide-react';
-import type { Task } from '../../types/task';
-import Badge from '../ui/Badge';
-import { format } from 'date-fns';
-import clsx from 'clsx';
+import { Calendar, Pencil, Trash2 } from "lucide-react";
+import type { Task } from "../../types/task";
+import Badge from "../ui/Badge";
+import { format, parseISO } from "date-fns";
+import clsx from "clsx";
 
 interface TaskDetailViewProps {
   task: Task;
@@ -18,18 +18,22 @@ export default function TaskDetailView({
   onClose,
 }: TaskDetailViewProps) {
   const progressColor =
-    task.status === 'Done'
-      ? 'bg-green-500'
-      : task.status === 'In Progress'
-      ? 'bg-blue-500'
-      : 'bg-gray-400';
+    task.status === "Done"
+      ? "bg-green-500"
+      : task.status === "In Progress"
+        ? "bg-blue-500"
+        : "bg-gray-400";
 
   return (
     <div className="space-y-5">
       {/* Title + Project */}
       <div>
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white">{task.title}</h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{task.project}</p>
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+          {task.title}
+        </h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          {task.project}
+        </p>
       </div>
 
       {/* Tag + Priority + Status */}
@@ -44,21 +48,23 @@ export default function TaskDetailView({
         <Calendar size={16} className="text-gray-400 dark:text-gray-500" />
         <span className="text-gray-600 dark:text-gray-400">Due date:</span>
         <span className="font-medium text-gray-900 dark:text-gray-100">
-          {format(new Date(task.date), 'MMM dd, yyyy')}
+          {format(parseISO(task.date), "MMM dd, yyyy")}
         </span>
       </div>
 
       {/* Progress */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Progress</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Progress
+          </span>
           <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
             {task.progress}%
           </span>
         </div>
         <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
           <div
-            className={clsx('h-full transition-all', progressColor)}
+            className={clsx("h-full transition-all", progressColor)}
             style={{ width: `${task.progress}%` }}
           />
         </div>
@@ -77,13 +83,15 @@ export default function TaskDetailView({
             >
               <div
                 className={clsx(
-                  'w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-white',
-                  assignee.avatarColor
+                  "w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-white",
+                  assignee.avatarColor,
                 )}
               >
                 {assignee.name.charAt(0)}
               </div>
-              <span className="text-sm text-gray-700 dark:text-gray-300">{assignee.name}</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                {assignee.name}
+              </span>
             </div>
           ))}
         </div>
