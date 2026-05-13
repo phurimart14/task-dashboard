@@ -1,7 +1,13 @@
 import { useState, useMemo, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { useTaskStore } from "../store/useTaskStore";
-import type { Task, Status, Priority, TaskFormData } from "../types/task";
+import type {
+  Task,
+  Status,
+  Priority,
+  TaskFormData,
+  SortBy,
+} from "../types/task";
 import TaskCard from "../components/task/TaskCard";
 import FilterBar from "../components/task/FilterBar";
 import Pagination from "../components/ui/Pagination";
@@ -26,6 +32,7 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [priorityFilter, setPriorityFilter] = useState<Priority | "All">("All");
   const [statusFilter, setStatusFilter] = useState<Status | "All">("All");
+  const [sortBy, setSortBy] = useState<SortBy>("default");
   const [currentPage, setCurrentPage] = useState(1);
   // Modal state
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -35,7 +42,7 @@ export default function DashboardPage() {
   // Reset to page 1 เมื่อ filter เปลี่ยน
   useEffect(() => {
     setCurrentPage(1);
-  }, [globalSearch, searchQuery, priorityFilter, statusFilter]);
+  }, [globalSearch, searchQuery, priorityFilter, statusFilter, sortBy]);
 
   // Filter tasks ตาม search + filters
   const filteredTasks = useMemo(() => {
@@ -67,19 +74,52 @@ export default function DashboardPage() {
     });
   }, [tasks, globalSearch, searchQuery, priorityFilter, statusFilter]);
 
+  // Sort tasks
+  const sortedTasks = useMemo(() => {
+    if (sortBy === "default") return filteredTasks;
+
+    const sorted = [...filteredTasks]; // copy array - ไม่ mutate ของเดิม
+
+    if (sortBy === "date-asc") {
+      return sorted.sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+      );
+    }
+    if (sortBy === "date-desc") {
+      return sorted.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+      );
+    }
+    if (sortBy === "priority") {
+      // High → Medium → Low
+      const order: Record<Priority, number> = {
+        "High Priority": 1,
+        "Medium Priority": 2,
+        Low: 3,
+      };
+      return sorted.sort((a, b) => order[a.priority] - order[b.priority]);
+    }
+    if (sortBy === "progress") {
+      return sorted.sort((a, b) => a.progress - b.progress);
+    }
+
+    return sorted;
+  }, [filteredTasks, sortBy]);
+
   // Pagination
-  const totalPages = Math.ceil(filteredTasks.length / TASKS_PER_PAGE);
+  const totalPages = Math.ceil(sortedTasks.length / TASKS_PER_PAGE);
 
   const paginatedTasks = useMemo(() => {
     const start = (currentPage - 1) * TASKS_PER_PAGE;
     const end = start + TASKS_PER_PAGE;
-    return filteredTasks.slice(start, end);
-  }, [filteredTasks, currentPage]);
+    return sortedTasks.slice(start, end);
+  }, [sortedTasks, currentPage]);
 
   const handleClearAll = () => {
     setSearchQuery("");
     setPriorityFilter("All");
     setStatusFilter("All");
+    setSortBy("default");
   };
 
   const handleCardClick = (task: Task) => {
@@ -134,16 +174,18 @@ export default function DashboardPage() {
         searchQuery={searchQuery}
         priorityFilter={priorityFilter}
         statusFilter={statusFilter}
+        sortBy={sortBy}
         onSearchChange={setSearchQuery}
         onPriorityChange={setPriorityFilter}
         onStatusChange={setStatusFilter}
+        onSortChange={setSortBy}
         onClearAll={handleClearAll}
       />
 
       {/* Results info */}
       <div className="text-sm text-gray-500">
-        Showing {paginatedTasks.length} of {filteredTasks.length} task
-        {filteredTasks.length !== 1 && "s"}
+        Showing {paginatedTasks.length} of {sortedTasks.length} task
+        {sortedTasks.length !== 1 && "s"}
       </div>
 
       {/* 3 Columns */}
