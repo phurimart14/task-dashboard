@@ -8,7 +8,7 @@ import type {
 } from "../../types/task";
 
 interface TaskFormProps {
-  initialData?: Task | null; // ถ้ามี = edit mode, ถ้าไม่มี = create mode
+  initialData?: Task | null;
   onSubmit: (data: TaskFormData) => void;
   onCancel: () => void;
 }
@@ -30,7 +30,6 @@ export default function TaskForm({
   onSubmit,
   onCancel,
 }: TaskFormProps) {
-  // Form state - ถ้ามี initialData ใช้ค่านั้น ถ้าไม่มีใช้ default
   const [title, setTitle] = useState(initialData?.title ?? "");
   const [project, setProject] = useState(initialData?.project ?? "");
   const [tag, setTag] = useState<Tag>(initialData?.tag ?? "Feature");
@@ -43,14 +42,13 @@ export default function TaskForm({
   );
   const [progress, setProgress] = useState(initialData?.progress ?? 0);
 
-  // Validation errors
   const [errors, setErrors] = useState<{ title?: string; project?: string }>(
     {},
   );
+
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Validation
     const newErrors: typeof errors = {};
     if (!title.trim()) newErrors.title = "กรุณากรอกชื่อ Task";
     if (!project.trim()) newErrors.project = "กรุณากรอกชื่อ Project";
@@ -60,7 +58,6 @@ export default function TaskForm({
       return;
     }
 
-    // Submit
     onSubmit({
       title: title.trim(),
       project: project.trim(),
@@ -77,7 +74,7 @@ export default function TaskForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Title */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Task Title <span className="text-red-500">*</span>
         </label>
         <input
@@ -88,8 +85,10 @@ export default function TaskForm({
             if (errors.title) setErrors({ ...errors, title: undefined });
           }}
           placeholder="e.g., Implement Dark Mode"
-          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            errors.title ? "border-red-400" : "border-gray-200"
+          className={`w-full px-3 py-2 text-sm border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+            errors.title
+              ? "border-red-400"
+              : "border-gray-200 dark:border-gray-600"
           }`}
         />
         {errors.title && (
@@ -99,7 +98,7 @@ export default function TaskForm({
 
       {/* Project */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Project <span className="text-red-500">*</span>
         </label>
         <input
@@ -110,8 +109,10 @@ export default function TaskForm({
             if (errors.project) setErrors({ ...errors, project: undefined });
           }}
           placeholder="e.g., Web App Redesign"
-          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            errors.project ? "border-red-400" : "border-gray-200"
+          className={`w-full px-3 py-2 text-sm border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+            errors.project
+              ? "border-red-400"
+              : "border-gray-200 dark:border-gray-600"
           }`}
         />
         {errors.project && (
@@ -122,13 +123,13 @@ export default function TaskForm({
       {/* Tag + Priority - 2 columns */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Tag
           </label>
           <select
             value={tag}
             onChange={(e) => setTag(e.target.value as Tag)}
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
           >
             {TAG_OPTIONS.map((opt) => (
               <option key={opt} value={opt}>
@@ -139,13 +140,13 @@ export default function TaskForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Priority
           </label>
           <select
             value={priority}
             onChange={(e) => setPriority(e.target.value as Priority)}
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
           >
             {PRIORITY_OPTIONS.map((opt) => (
               <option key={opt} value={opt}>
@@ -159,13 +160,13 @@ export default function TaskForm({
       {/* Status + Date - 2 columns */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Status
           </label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as Status)}
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
           >
             {STATUS_OPTIONS.map((opt) => (
               <option key={opt} value={opt}>
@@ -176,14 +177,14 @@ export default function TaskForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Due Date
           </label>
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors [color-scheme:light] dark:[color-scheme:dark]"
           />
         </div>
       </div>
@@ -191,10 +192,10 @@ export default function TaskForm({
       {/* Progress */}
       <div>
         <div className="flex items-center justify-between mb-1">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Progress
           </label>
-          <span className="text-sm font-semibold text-blue-600">
+          <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
             {progress}%
           </span>
         </div>
@@ -209,17 +210,17 @@ export default function TaskForm({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex justify-end gap-2 pt-4 border-t border-gray-200">
+      <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg"
+          className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
         >
           {initialData ? "Save Changes" : "Create Task"}
         </button>

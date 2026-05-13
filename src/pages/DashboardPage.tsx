@@ -174,7 +174,9 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Header — Title + New Task button */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Dashboard
+        </h1>
         <button
           onClick={handleNewTask}
           className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors"
@@ -198,7 +200,7 @@ export default function DashboardPage() {
       />
 
       {/* Results info */}
-      <div className="text-sm text-gray-500">
+      <div className="text-sm text-gray-500 dark:text-gray-400">
         Showing {paginatedTasks.length} of {sortedTasks.length} task
         {sortedTasks.length !== 1 && "s"}
       </div>
@@ -214,13 +216,11 @@ export default function DashboardPage() {
             <div key={column.status} className="space-y-3">
               {/* Column Header */}
               <div
-                className={`bg-white border-t-4 ${column.color} rounded-t-lg px-4 py-3 shadow-sm`}
+                className={`bg-white dark:bg-gray-800 border-t-4 ${column.color} rounded-t-lg px-4 py-3 shadow-sm`}
               >
-                <h2 className="font-semibold text-gray-900 flex items-center justify-between">
+                <h2 className="font-semibold text-gray-900 dark:text-white flex items-center justify-between">
                   {column.title}
-                  <span className="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                    {columnTasks.length}
-                  </span>
+                  <span className="text-xs font-normal text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full"></span>
                 </h2>
               </div>
 
@@ -236,7 +236,7 @@ export default function DashboardPage() {
 
                 {/* Empty state */}
                 {columnTasks.length === 0 && (
-                  <div className="text-center py-8 text-sm text-gray-400">
+                  <div className="text-center py-8 text-sm text-gray-400 dark:text-gray-500">
                     No tasks
                   </div>
                 )}
