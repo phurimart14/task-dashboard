@@ -36,9 +36,9 @@ export default function Pagination({
           key={page}
           onClick={() => onPageChange(page)}
           className={clsx(
-            "min-w-[36px] h-9 px-3 rounded-lg text-sm font-medium transition-colors",
+            "min-w-[36px] h-9 px-3 rounded-lg text-sm font-medium transition-all hover:scale-105",
             currentPage === page
-              ? "bg-blue-600 text-white"
+              ? "bg-blue-600 text-white shadow-md"
               : "border border-gray-200 text-gray-700 hover:bg-gray-100",
           )}
         >

@@ -44,7 +44,7 @@ export default function Sidebar() {
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 ml-auto"
+          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 ml-auto transition-colors"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
