@@ -14,6 +14,7 @@ import Pagination from "../components/ui/Pagination";
 import Modal from "../components/ui/Modal";
 import TaskDetailView from "../components/task/TaskDetailView";
 import TaskForm from "../components/task/TaskForm";
+import ConfirmDialog from "../components/ui/ConfirmDialog";
 
 const TASKS_PER_PAGE = 6;
 
@@ -28,6 +29,7 @@ export default function DashboardPage() {
   const globalSearch = useTaskStore((state) => state.globalSearch);
   const updateTask = useTaskStore((state) => state.updateTask);
   const addTask = useTaskStore((state) => state.addTask);
+  const deleteTask = useTaskStore((state) => state.deleteTask);
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
   const [priorityFilter, setPriorityFilter] = useState<Priority | "All">("All");
@@ -38,6 +40,7 @@ export default function DashboardPage() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [modalMode, setModalMode] = useState<"view" | "edit">("view");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
 
   // Reset to page 1 เมื่อ filter เปลี่ยน
   useEffect(() => {
@@ -155,6 +158,18 @@ export default function DashboardPage() {
     handleCloseCreateModal();
   };
 
+  const handleDeleteClick = () => {
+    if (!selectedTask) return;
+    setTaskToDelete(selectedTask);
+    setSelectedTask(null); // ปิด detail modal ก่อน
+  };
+
+  const handleConfirmDelete = () => {
+    if (!taskToDelete) return;
+    deleteTask(taskToDelete.id);
+    setTaskToDelete(null);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header — Title + New Task button */}
@@ -247,6 +262,7 @@ export default function DashboardPage() {
           <TaskDetailView
             task={selectedTask}
             onEdit={handleEditTask}
+            onDelete={handleDeleteClick}
             onClose={handleCloseModal}
           />
         )}
@@ -270,6 +286,17 @@ export default function DashboardPage() {
           onCancel={handleCloseCreateModal}
         />
       </Modal>
+
+      {/* Confirm Delete Dialog */}
+      <ConfirmDialog
+        isOpen={taskToDelete !== null}
+        onClose={() => setTaskToDelete(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Task"
+        message={`Are you sure you want to delete "${taskToDelete?.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </div>
   );
 }
