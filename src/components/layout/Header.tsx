@@ -1,17 +1,33 @@
-import { Search, Bell, ChevronDown, X } from 'lucide-react';
-import { useTaskStore } from '../../store/useTaskStore';
+import { Search, Bell, ChevronDown, X, Menu } from "lucide-react";
+import { useTaskStore } from "../../store/useTaskStore";
 
 export default function Header() {
   const globalSearch = useTaskStore((state) => state.globalSearch);
   const setGlobalSearch = useTaskStore((state) => state.setGlobalSearch);
+  const toggleMobileSidebar = useTaskStore(
+    (state) => state.toggleMobileSidebar,
+  );
 
   return (
-    <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6 transition-colors">
-      {/* Page Title */}
-      <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Dashboard</h1>
+    <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4 md:px-6 transition-colors">
+      {/* === Left: Hamburger (mobile) + Title === */}
+      <div className="flex items-center gap-3">
+        {/* Hamburger - เฉพาะ mobile */}
+        <button
+          onClick={toggleMobileSidebar}
+          className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
+          aria-label="Open sidebar"
+        >
+          <Menu size={20} />
+        </button>
+
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+          Dashboard
+        </h1>
+      </div>
 
       {/* Right Section */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
         {/* Global Search */}
         <div className="relative">
           <Search
@@ -27,7 +43,7 @@ export default function Header() {
           />
           {globalSearch && (
             <button
-              onClick={() => setGlobalSearch('')}
+              onClick={() => setGlobalSearch("")}
               className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
               aria-label="Clear search"
             >
@@ -36,9 +52,9 @@ export default function Header() {
           )}
         </div>
 
-        {/* Notification */}
+        {/* Notification - ซ่อนบน mobile เล็ก */}
         <button
-          className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="hidden sm:flex relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           aria-label="Notifications"
         >
           <Bell size={20} className="text-gray-600 dark:text-gray-400" />
