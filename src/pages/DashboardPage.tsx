@@ -16,7 +16,7 @@ import TaskDetailView from "../components/task/TaskDetailView";
 import TaskForm from "../components/task/TaskForm";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 
-const TASKS_PER_PAGE = 6;
+const CARDS_PER_COLUMN = 2;
 
 const COLUMNS: { status: Status; title: string; color: string }[] = [
   { status: "To Do", title: "To Do", color: "border-gray-400" },
@@ -110,13 +110,40 @@ export default function DashboardPage() {
   }, [filteredTasks, sortBy]);
 
   // Pagination
-  const totalPages = Math.ceil(sortedTasks.length / TASKS_PER_PAGE);
+  // === Group sorted tasks by status ===
+  // แยกเป็น 3 columns ก่อน เพื่อรองรับ pagination แบบ per-column
+  const tasksByStatus = useMemo(() => {
+    return {
+      "To Do": sortedTasks.filter((t) => t.status === "To Do"),
+      "In Progress": sortedTasks.filter((t) => t.status === "In Progress"),
+      Done: sortedTasks.filter((t) => t.status === "Done"),
+    };
+  }, [sortedTasks]);
 
-  const paginatedTasks = useMemo(() => {
-    const start = (currentPage - 1) * TASKS_PER_PAGE;
-    const end = start + TASKS_PER_PAGE;
-    return sortedTasks.slice(start, end);
-  }, [sortedTasks, currentPage]);
+  // Pagination
+  // === Total pages = ยึดจาก column ที่มี task มากสุด ===
+  // เช่น To Do 5, In Progress 3, Done 4 → max = 5 → ceil(5/2) = 3 pages
+  const totalPages = useMemo(() => {
+    const maxColumnLength = Math.max(
+      tasksByStatus["To Do"].length,
+      tasksByStatus["In Progress"].length,
+      tasksByStatus["Done"].length,
+    );
+    return Math.max(1, Math.ceil(maxColumnLength / CARDS_PER_COLUMN));
+  }, [tasksByStatus]);
+
+  // === Slice แต่ละ column ตามหน้าปัจจุบัน ===
+  // หน้า 1: tasks[0..2], หน้า 2: tasks[2..4], ...
+  const paginatedTasksByStatus = useMemo(() => {
+    const start = (currentPage - 1) * CARDS_PER_COLUMN;
+    const end = start + CARDS_PER_COLUMN;
+
+    return {
+      "To Do": tasksByStatus["To Do"].slice(start, end),
+      "In Progress": tasksByStatus["In Progress"].slice(start, end),
+      Done: tasksByStatus["Done"].slice(start, end),
+    };
+  }, [tasksByStatus, currentPage]);
 
   const handleClearAll = () => {
     setSearchQuery("");
@@ -201,16 +228,17 @@ export default function DashboardPage() {
 
       {/* Results info */}
       <div className="text-sm text-gray-500 dark:text-gray-400">
-        Showing {paginatedTasks.length} of {sortedTasks.length} task
-        {sortedTasks.length !== 1 && "s"}
+        Showing {sortedTasks.length} task{sortedTasks.length !== 1 && "s"}
+        {totalPages > 1 && ` • Page ${currentPage} of ${totalPages}`}
       </div>
 
       {/* 3 Columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {COLUMNS.map((column) => {
-          const columnTasks = paginatedTasks.filter(
-            (t) => t.status === column.status,
-          );
+          // ใช้ task ที่ slice แล้วของ column นี้
+          const columnTasks = paginatedTasksByStatus[column.status];
+          // จำนวนทั้งหมดใน column นี้ (สำหรับ badge - แสดงจำนวนรวม ไม่ใช่แค่หน้านี้)
+          const totalInColumn = tasksByStatus[column.status].length;
 
           return (
             <div key={column.status} className="space-y-3">
@@ -220,7 +248,9 @@ export default function DashboardPage() {
               >
                 <h2 className="font-semibold text-gray-900 dark:text-white flex items-center justify-between">
                   {column.title}
-                  <span className="text-xs font-normal text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full"></span>
+                  <span className="text-xs font-normal text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full">
+                    {totalInColumn}
+                  </span>
                 </h2>
               </div>
 

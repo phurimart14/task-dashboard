@@ -1,73 +1,306 @@
-# React + TypeScript + Vite
+# 🎯 Task Dashboard — DEVDEVA Frontend Test
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Frontend Developer Test — ข้อ 1: Task Dashboard
+> by ภูริมาศ สุดานิช
 
-Currently, two official plugins are available:
+[![React](https://img.shields.io/badge/React-18-61dafb)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38bdf8)](https://tailwindcss.com)
+[![Zustand](https://img.shields.io/badge/Zustand-State-orange)](https://zustand.docs.pmnd.rs/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 📋 สารบัญ
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- [Demo](#-demo)
+- [วิธีรัน](#-วิธีรัน)
+- [Tech Stack](#-tech-stack)
+- [Features ตามโจทย์](#-features-ตามโจทย์)
+- [Bonus Features](#-bonus-features)
+- [Architecture Decisions](#-architecture-decisions)
+- [Folder Structure](#-folder-structure)
+- [เทคนิคการเขียนที่ใช้](#-เทคนิคการเขียนที่ใช้)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🌐 Demo
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+🔗 **Live Demo:** [https://your-vercel-url.vercel.app](#) *(จะ deploy ใน Day 5)*
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+🎬 **Screenshots:**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| Light Mode | Dark Mode |
+|------------|-----------|
+| Dashboard view | Dashboard view (dark) |
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 วิธีรัน
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### ความต้องการ
+- Node.js v18+
+- npm v10+
+
+### ขั้นตอน
+
+\`\`\`bash
+# 1. Clone repository
+git clone https://github.com/YOUR_USERNAME/task-dashboard.git
+cd task-dashboard
+
+# 2. ติดตั้ง dependencies
+npm install
+
+# 3. รัน dev server
+npm run dev
+
+# เปิด browser ที่ http://localhost:5173
+\`\`\`
+
+### Build for production
+\`\`\`bash
+npm run build
+npm run preview
+\`\`\`
+
+---
+
+## 🛠️ Tech Stack
+
+| Package | Purpose |
+|---------|---------|
+| **React 18 + TypeScript** | Core framework + type safety |
+| **Vite** | Build tool ที่เร็วและทันสมัย |
+| **Tailwind CSS v4** | Utility-first styling (CSS-first config) |
+| **Zustand** | Lightweight state management |
+| **lucide-react** | Modern icon library |
+| **date-fns** | Date formatting |
+| **clsx** | Conditional className helper |
+
+### ทำไมเลือก stack นี้?
+
+- **Vite** — Dev server เริ่มเร็วใน 1 วินาที (vs CRA 30+ วินาที)
+- **Zustand** — เบา (~1KB), ไม่ต้องห่อ Provider, มี selective subscription
+- **Tailwind v4** — CSS-first config เร็วขึ้น 5x จาก v3
+- **TypeScript** — จับ bug ตั้งแต่ตอนเขียน code
+
+---
+
+## ✅ Features ตามโจทย์
+
+ครบทั้ง 6 requirement ที่ระบุในโจทย์:
+
+| Item | Feature | Status |
+|------|---------|--------|
+| **A** | Global Search ที่ Header — ค้นได้ทุก field (title, priority, status, tag, project) | ✅ |
+| **B** | Filter ในช่องเดียว — Search + Priority + Status | ✅ |
+| **C** | คลิกการ์ด → Popup แสดง detail + ปุ่ม Edit | ✅ |
+| **D** | ปุ่ม "+ New Task" → Popup ฟอร์มกรอกข้อมูล | ✅ |
+| **E** | Pagination 6 cards/page | ✅ |
+| **F** | Sidebar collapse/expand | ✅ |
+
+---
+
+## 🎁 Bonus Features
+
+ฟีเจอร์เสริมที่เพิ่มเข้ามาเพื่อยกระดับ UX และแสดงเทคนิคเพิ่มเติม:
+
+### 1. 💾 Data Persistence
+- ใช้ **Zustand persist middleware** เก็บ tasks ใน localStorage
+- ใช้ `partialize` เลือกเก็บเฉพาะ state ที่ต้องการ (tasks + theme, ไม่เก็บ search)
+- เปลี่ยน/สร้าง/ลบ task แล้ว refresh → ข้อมูลไม่หาย
+
+### 2. 🎬 Smooth Animations
+- Custom keyframes ใน Tailwind v4 (`fade-in`, `scale-in`, `slide-in`)
+- ใช้ `cubic-bezier(0.16, 1, 0.3, 1)` สำหรับ premium feel
+- Modal entry, card hover lift, pagination scale
+
+### 3. 📊 Sort Tasks
+- เรียงตาม Date (Newest/Oldest), Priority (High → Low), Progress
+- ใช้ `Record<Priority, number>` map priority เป็นตัวเลข — type-safe sort
+- Reset page อัตโนมัติเมื่อเปลี่ยน sort
+
+### 4. 🗑️ Delete Task with Confirm
+- Reusable `ConfirmDialog` component
+- ใช้ Modal เดียวกับ Detail (composition pattern)
+- UX safe: วาง Delete แยกจาก Edit/Close เพื่อป้องกันคลิกผิด
+
+### 5. 🌙 Dark Mode Toggle
+- Auto-detect **system preference** ตอนเริ่มต้น (`prefers-color-scheme`)
+- Persist theme เลือกใน localStorage
+- ใช้ Tailwind v4 `@custom-variant dark` (class-based)
+- รองรับทุก component รวม form, modal, date picker
+
+---
+
+## 🏗️ Architecture Decisions
+
+### 1. แยก Search 2 ที่ (A vs B) — ทำไม?
+
+ในภาพโจทย์มี search 2 จุด ผมตีความให้ทำงานต่างกัน:
+
+| | Search A (Header) | Search B (FilterBar) |
+|---|---|---|
+| Logic | **OR** — match field ใดก็ได้ | **AND** — combine กับ dropdown filter |
+| Scope | ทุก field (title, priority, status, tag, project) | เฉพาะ title |
+| Use case | Quick search รู้แล้วว่าจะค้นอะไร | Structured filter — narrow down ทีละขั้น |
+
+**Reference:** คล้ายกับ tool อย่าง Linear, Notion ที่มีทั้ง command palette และ filter view
+
+### 2. Modal เดียว 3 modes (View / Edit / Create)
+
+แทนที่จะสร้าง 3 component แยก ผมใช้ Modal เดียวกัน + component ภายในต่างกัน:
+
+\`\`\`
+[คลิกการ์ด] → selectedTask + mode='view' → <TaskDetailView />
+[กด Edit]   → mode='edit'                → <TaskForm initialData={task} />
+[+New Task] → isCreateModalOpen=true     → <TaskForm /> (no initialData)
+\`\`\`
+
+**ทำไมแยก isCreateModalOpen ออกจาก selectedTask?**
+- Logic ชัดเจน — view/edit ใช้ task ที่มี, create ไม่มี
+- State ไม่ conflict — กดการ์ดและกด +New ไม่ชนกัน
+- Code อ่านง่าย
+
+### 3. Polymorphic TaskForm Component
+
+TaskForm ใช้ได้ทั้ง Edit + Create ด้วย **optional prop**:
+
+\`\`\`tsx
+// Edit mode - ส่ง initialData
+<TaskForm initialData={task} onSubmit={handleSave} />
+
+// Create mode - ไม่ส่ง initialData
+<TaskForm onSubmit={handleCreate} />
+\`\`\`
+
+Form ปรับตัวเอง: ใช้ค่าเดิม + ปุ่ม "Save Changes" หรือ form เปล่า + ปุ่ม "Create Task"
+
+### 4. Filter Pipeline ที่ optimize ด้วย useMemo
+
+\`\`\`
+tasks (raw)
+  ↓ Global Search (OR — ทุก field)
+  ↓ Local Search (AND — title)
+  ↓ Priority Filter
+  ↓ Status Filter
+filteredTasks
+  ↓ Sort (date/priority/progress)
+sortedTasks
+  ↓ Slice (pagination 6/page)
+paginatedTasks
+  ↓ Group by status
+Render 3 columns
+\`\`\`
+
+ทุก step ใช้ `useMemo` cache — ไม่คำนวณซ้ำทุก render
+
+---
+
+## 📂 Folder Structure
+
+\`\`\`
+src/
+├── components/
+│   ├── layout/
+│   │   ├── Sidebar.tsx          # Item F + Dark mode toggle
+│   │   └── Header.tsx           # Item A (global search)
+│   ├── ui/
+│   │   ├── Badge.tsx            # Priority/Tag/Status chips
+│   │   ├── Modal.tsx            # Reusable modal base
+│   │   ├── Pagination.tsx       # Item E
+│   │   └── ConfirmDialog.tsx    # Delete confirmation
+│   └── task/
+│       ├── TaskCard.tsx         # Card ใน 3 columns
+│       ├── FilterBar.tsx        # Item B (filter + sort)
+│       ├── TaskDetailView.tsx   # Item C (view mode)
+│       └── TaskForm.tsx         # Item C + D (edit/create)
+├── pages/
+│   └── DashboardPage.tsx        # หน้าหลัก
+├── store/
+│   └── useTaskStore.ts          # Zustand store
+├── types/
+│   └── task.ts                  # TypeScript types
+├── data/
+│   └── mockTasks.ts             # Mock data 12 tasks
+├── App.tsx                      # Layout + theme effect
+└── index.css                    # Tailwind + dark mode config
+\`\`\`
+
+---
+
+## 💡 เทคนิคการเขียนที่ใช้
+
+### React Patterns
+- **Controlled Components** — FilterBar, TaskForm รับ state จาก parent
+- **Polymorphic Components** — TaskForm ใช้ได้ 2 modes ด้วย optional prop
+- **Composition** — Modal รับ children, ConfirmDialog ใช้ Modal เป็น base
+- **Compound Pattern** — DashboardPage จัดการ state ของลูกๆ ทั้งหมด
+
+### Hooks ที่ใช้
+- `useState` — Local state ที่ component เป็นเจ้าของ
+- `useMemo` — Cache filtered/sorted/paginated tasks
+- `useEffect` — Reset page เมื่อ filter เปลี่ยน, lock scroll, apply theme
+- `useRef` — Reference DOM (Modal element)
+
+### TypeScript Patterns
+- **Union Types** — `Priority | 'All'` แทน enum
+- **Utility Types** — `Omit<Task, 'id'>` สำหรับ form, `Partial<Task>` สำหรับ update
+- **Record Types** — `Record<Priority, number>` สำหรับ type-safe sorting
+- **Type-only Imports** — `import type` แยกจาก value imports เพื่อ optimize bundle
+- **Discriminated Unions** — Modal mode (`'view' | 'edit'`)
+
+### Performance Optimization
+- `useMemo` สำหรับ filter/sort/pagination logic
+- **Selective subscription** ใน Zustand — re-render เฉพาะเมื่อ state ที่ใช้เปลี่ยน
+- Pagination 6 cards/page — ลด DOM nodes
+- React.lazy ready (พร้อมรองรับถ้าโปรเจกต์ใหญ่ขึ้น)
+
+### Accessibility
+- `<button>` ทั้งใบสำหรับการ์ด — keyboard nav, screen reader
+- `aria-label` ที่ปุ่มไอคอน
+- `role="dialog"` + `aria-modal` ที่ Modal
+- ปิด Modal ด้วย Escape key
+
+---
+
+## 🧪 Testing Strategy (ที่ทดสอบ manually)
+
+### Filter
+- [x] Search empty → แสดง task ทั้งหมด
+- [x] Search ที่ match → กรองถูก
+- [x] Search ที่ไม่ match → No tasks
+- [x] รวม search + priority + status → AND condition
+- [x] Clear ปุ่ม → reset ทั้งหมด
+
+### Modal
+- [x] เปิดด้วยการคลิกการ์ด → View mode
+- [x] กด Edit → เปลี่ยนเป็น Edit mode (modal เดิม)
+- [x] กด +New → Create mode
+- [x] ปิดด้วย: ปุ่ม X | Cancel | Backdrop | ESC
+
+### Persistence
+- [x] สร้าง task → refresh → ข้อมูลยังอยู่
+- [x] Theme เลือก → refresh → ยังเป็น mode เดิม
+- [x] Clear localStorage → reload → ใช้ system preference
+
+---
+
+## 📝 Notes
+
+- **โจทย์ข้อ 2** (Chart + Export PDF) อยู่ใน repository แยกต่างหากเพื่อให้ scope ของแต่ละข้อชัดเจน
+- ทุก feature ทดสอบบน **Chrome, Firefox, Edge** บน Windows
+- Responsive design: ใช้ได้ทั้ง desktop และ tablet (mobile รองรับ แต่ optimize สำหรับ desktop เป็นหลัก)
+
+---
+
+## 👤 ผู้พัฒนา
+
+**ภูริมาศ สุดานิช**
+- 📧 Email: [phurimart14@gmail.com]
+- 📱 Phone: [096-0978924]
+- 🐙 GitHub: [your-github]
+
+---
+
+*Generated for DEVDEVA Frontend Developer Test — May 2026*
