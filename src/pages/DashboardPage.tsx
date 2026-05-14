@@ -132,6 +132,11 @@ export default function DashboardPage() {
     return Math.max(1, Math.ceil(maxColumnLength / CARDS_PER_COLUMN));
   }, [tasksByStatus]);
 
+  // Clamp currentPage เมื่อ totalPages ลดลง (เช่น หลัง delete task)
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+  }, [totalPages]);
+
   // === Slice แต่ละ column ตามหน้าปัจจุบัน ===
   // หน้า 1: tasks[0..2], หน้า 2: tasks[2..4], ...
   const paginatedTasksByStatus = useMemo(() => {

@@ -36,7 +36,7 @@ export default function FilterBar({
       <div className="relative flex-1 min-w-[200px]">
         <Search
           size={16}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-white"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
         />
         <input
           type="text"
