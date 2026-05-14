@@ -144,8 +144,10 @@ npm run preview
 - รองรับทุก component รวม form, modal, date picker
 
 ### หมายเหตุ
+
 - ใช้ `date-fns` `parseISO` แทน `new Date(string)` เพื่อหลีกเลี่ยง timezone bug
 - TypeScript strict mode (`verbatimModuleSyntax`) — แยก `import type` จาก value imports
+
 ---
 
 ## 🏗️ Architecture Decisions
@@ -254,20 +256,20 @@ const totalPages = Math.ceil(maxColumnLength / CARDS_PER_COLUMN);
 
 ### 🐛 Round 1: Critical + Responsive Issues (4 bugs)
 
-| # | Bug | Severity | Fix |
-|---|-----|----------|-----|
-| 1 | **Date Timezone Bug** | 🔴 Critical | `new Date("2024-03-15")` parse เป็น UTC midnight ทำให้ user ใน timezone อื่นเห็นวันเลื่อน — แก้ด้วย `parseISO` จาก date-fns + custom helper สำหรับ local date |
-| 2 | **Sidebar ไม่ซ่อนบน mobile** | 🟠 High | เพิ่ม mobile drawer + hamburger menu + overlay |
-| 3 | **Header search overflow** | 🟡 Medium | ปรับ width responsive: `w-28 sm:w-48 md:w-56 lg:w-64` |
-| 4 | **FilterBar overflow on md** | 🟡 Medium | เปลี่ยน breakpoint เป็น `lg:flex-row lg:flex-wrap xl:flex-nowrap` |
+| #   | Bug                          | Severity    | Fix                                                                                                                                                           |
+| --- | ---------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Date Timezone Bug**        | 🔴 Critical | `new Date("2024-03-15")` parse เป็น UTC midnight ทำให้ user ใน timezone อื่นเห็นวันเลื่อน — แก้ด้วย `parseISO` จาก date-fns + custom helper สำหรับ local date |
+| 2   | **Sidebar ไม่ซ่อนบน mobile** | 🟠 High     | เพิ่ม mobile drawer + hamburger menu + overlay                                                                                                                |
+| 3   | **Header search overflow**   | 🟡 Medium   | ปรับ width responsive: `w-28 sm:w-48 md:w-56 lg:w-64`                                                                                                         |
+| 4   | **FilterBar overflow on md** | 🟡 Medium   | เปลี่ยน breakpoint เป็น `lg:flex-row lg:flex-wrap xl:flex-nowrap`                                                                                             |
 
 ### 🐛 Round 2: Edge Cases + Visual Polish (3 bugs)
 
-| # | Bug | Severity | Fix |
-|---|-----|----------|-----|
-| 5 | **Pagination ไม่มี truncation** | 🟠 High | render ปุ่มทุกหน้าตรงๆ — ถ้ามี 15 หน้าจะล้น UI แก้ด้วย smart pagination pattern: `[1 ... 7 8 9 ... 15]` |
-| 6 | **Badge ไม่มี dark mode** | 🟡 Medium | เพิ่ม `dark:` prefix ทุก variant ของ Badge (priority, status, tag) |
-| 7 | **Icon ใช้ `dark:text-white`** | 🟢 Low | search icon ใช้ `dark:text-white` สว่างเกิน — เปลี่ยนเป็น `dark:text-gray-500` ตาม visual hierarchy |
+| #   | Bug                             | Severity  | Fix                                                                                                     |
+| --- | ------------------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
+| 5   | **Pagination ไม่มี truncation** | 🟠 High   | render ปุ่มทุกหน้าตรงๆ — ถ้ามี 15 หน้าจะล้น UI แก้ด้วย smart pagination pattern: `[1 ... 7 8 9 ... 15]` |
+| 6   | **Badge ไม่มี dark mode**       | 🟡 Medium | เพิ่ม `dark:` prefix ทุก variant ของ Badge (priority, status, tag)                                      |
+| 7   | **Icon ใช้ `dark:text-white`**  | 🟢 Low    | search icon ใช้ `dark:text-white` สว่างเกิน — เปลี่ยนเป็น `dark:text-gray-500` ตาม visual hierarchy     |
 
 ### 💡 Bonus Refactor: useEffect Dependencies
 
@@ -276,18 +278,18 @@ const totalPages = Math.ceil(maxColumnLength / CARDS_PER_COLUMN);
 \`\`\`typescript
 // ❌ Before - reset page ทุกครั้งที่ tasks เปลี่ยน (รวม edit)
 useEffect(() => {
-  setCurrentPage(1);
+setCurrentPage(1);
 }, [globalSearch, searchQuery, priorityFilter, statusFilter, sortBy, tasks]);
 
 // ✅ After - reset page เฉพาะตอน filter เปลี่ยน หรือ totalPages เปลี่ยน
 useEffect(() => {
-  setCurrentPage(1);
+setCurrentPage(1);
 }, [globalSearch, searchQuery, priorityFilter, statusFilter, sortBy]);
 
 useEffect(() => {
-  if (currentPage > totalPages) {
-    setCurrentPage(Math.max(1, totalPages));
-  }
+if (currentPage > totalPages) {
+setCurrentPage(Math.max(1, totalPages));
+}
 }, [totalPages, currentPage]);
 \`\`\`
 
@@ -393,12 +395,14 @@ src/
 - [x] Clear localStorage → reload → ใช้ system preference
 
 ### Pagination (Edge cases ที่เจอจริง)
+
 - [x] เห็นทุก column ที่มี task แม้หลัง sort
 - [x] Sort + Pagination ทำงานร่วมกันถูก
 - [x] Filter เหลือ 0 → Pagination ซ่อน
 - [x] Reset page เมื่อเปลี่ยน sort/filter
 
 ### Responsive (จากการ Review)
+
 - [x] Mobile (375px) — sidebar drawer + overlay ทำงาน
 - [x] Tablet portrait (768px) — FilterBar stack vertical
 - [x] Tablet landscape (1024px) — FilterBar row + wrap
@@ -406,6 +410,7 @@ src/
 - [x] Resize ต่อเนื่อง — ไม่มี jarring transitions
 
 ### Pagination Edge Cases (จากการ Review)
+
 - [x] หน้าน้อย ≤ 7 — แสดงทุกหน้า
 - [x] หน้าเยอะ (15) — truncate ด้วย `...`
 - [x] หน้าปัจจุบันใกล้ first — `[1 2 3 ... 15]`
@@ -413,9 +418,9 @@ src/
 - [x] หน้าปัจจุบันใกล้ last — `[1 ... 13 14 15]`
 
 ### Internationalization (จากการ Review)
+
 - [x] Date display ถูกในทุก timezone (parseISO)
 - [x] Default date = local today ไม่ใช่ UTC
-
 
 ---
 

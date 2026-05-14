@@ -21,7 +21,7 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
   return (
     <button
       onClick={() => onClick(task)}
-      className="w-full text-left bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-500 hover:-translate-y-0.5 transition-all duration-200"
+      className="w-full text-left bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-500 hover:-translate-y-0.5 transition-all duration-200 shadow-md"
     >
       {/* Title + Project */}
       <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
