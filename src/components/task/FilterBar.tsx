@@ -31,9 +31,9 @@ export default function FilterBar({
     sortBy !== "default";
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 flex flex-col md:flex-row gap-3">
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 flex flex-col lg:flex-row lg:flex-wrap xl:flex-nowrap gap-3">
       {/* Search Input */}
-      <div className="relative flex-1">
+      <div className="relative flex-1 min-w-[200px]">
         <Search
           size={16}
           className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-white"
@@ -51,7 +51,7 @@ export default function FilterBar({
       <select
         value={priorityFilter}
         onChange={(e) => onPriorityChange(e.target.value as Priority | "All")}
-        className="px-3 py-2 text-sm dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[150px] transition-all"
+        className="px-3 py-2 text-sm dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[130px] transition-all"
       >
         <option value="All">All Priorities</option>
         <option value="Low">Low</option>
@@ -63,7 +63,7 @@ export default function FilterBar({
       <select
         value={statusFilter}
         onChange={(e) => onStatusChange(e.target.value as Status | "All")}
-        className="px-3 py-2 text-sm dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[150px] transition-all"
+        className="px-3 py-2 text-sm dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[130px] transition-all"
       >
         <option value="All">Status: All</option>
         <option value="To Do">To Do</option>
@@ -80,7 +80,7 @@ export default function FilterBar({
         <select
           value={sortBy}
           onChange={(e) => onSortChange(e.target.value as SortBy)}
-          className="pl-8 pr-3 py-2 text-sm dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[200px] transition-all"
+          className="pl-8 pr-3 py-2 text-sm dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[180px] transition-all"
         >
           {Object.entries(SORT_LABELS).map(([value, label]) => (
             <option key={value} value={value}>
