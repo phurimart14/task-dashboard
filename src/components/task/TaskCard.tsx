@@ -77,7 +77,7 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
           </div>
         ))}
         {task.assignees.length > 3 && (
-          <div className="w-7 h-7 rounded-full border-2 border-white bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600">
+          <div className="w-7 h-7 rounded-full border-2 border-white bg-gray-200 dark:bg-gray-600 dark:text-gray-300 flex items-center justify-center text-xs font-semibold text-gray-600">
             +{task.assignees.length - 3}
           </div>
         )}

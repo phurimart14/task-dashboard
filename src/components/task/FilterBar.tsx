@@ -51,7 +51,7 @@ export default function FilterBar({
       <select
         value={priorityFilter}
         onChange={(e) => onPriorityChange(e.target.value as Priority | "All")}
-        className="px-3 py-2 text-sm dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[130px] transition-all"
+        className="px-3 py-2 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-32.5 transition-all"
       >
         <option value="All">All Priorities</option>
         <option value="Low">Low</option>
@@ -63,7 +63,7 @@ export default function FilterBar({
       <select
         value={statusFilter}
         onChange={(e) => onStatusChange(e.target.value as Status | "All")}
-        className="px-3 py-2 text-sm dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[130px] transition-all"
+        className="px-3 py-2 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-32.5 transition-all"
       >
         <option value="All">Status: All</option>
         <option value="To Do">To Do</option>
@@ -80,7 +80,7 @@ export default function FilterBar({
         <select
           value={sortBy}
           onChange={(e) => onSortChange(e.target.value as SortBy)}
-          className="pl-8 pr-3 py-2 text-sm dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[180px] transition-all"
+          className="pl-8 pr-3 py-2 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-45 transition-all"
         >
           {Object.entries(SORT_LABELS).map(([value, label]) => (
             <option key={value} value={value}>
