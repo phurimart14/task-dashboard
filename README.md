@@ -25,7 +25,7 @@
 
 ## 🌐 Demo
 
-🔗 **Live Demo:** [https://your-vercel-url.vercel.app](#) _(จะ deploy ใน Day 5)_
+🔗 **Live Demo:** [https://task-dashboard-tau-tawny.vercel.app/](#)
 
 🎬 **Screenshots:**
 
@@ -438,7 +438,7 @@ src/
 
 - 📧 Email: [phurimart14@gmail.com]
 - 📱 Phone: [096-0978924]
-- 🐙 GitHub: [your-github]
+- 🐙 GitHub: [https://github.com/phurimart14/task-dashboard]
 
 ---
 
