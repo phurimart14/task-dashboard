@@ -301,7 +301,7 @@ setCurrentPage(Math.max(1, totalPages));
 
 ## 📂 Folder Structure
 
-\`\`\`
+```
 src/
 ├── components/
 │ ├── layout/
@@ -327,7 +327,7 @@ src/
 │ └── mockTasks.ts # Mock data 12 tasks
 ├── App.tsx # Layout + theme effect
 └── index.css # Tailwind + dark mode config
-\`\`\`
+```
 
 ---
 
