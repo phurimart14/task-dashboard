@@ -29,9 +29,9 @@
 
 🎬 **Screenshots:**
 
-| Light Mode     | Dark Mode             |
-| -------------- | --------------------- |
-| Dashboard view | Dashboard view (dark) |
+| Light Mode | Dark Mode |
+| --- | --- |
+| ![Light Mode](src/assets/lightmode.png) | ![Dark Mode](src/assets/darkmode.png) |
 
 ---
 
